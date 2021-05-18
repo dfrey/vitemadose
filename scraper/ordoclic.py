@@ -6,7 +6,8 @@ from datetime import datetime, timedelta
 from dateutil.parser import isoparse
 from pytz import timezone
 
-from scraper.pattern.center_info import get_vaccine_name, Vaccine, INTERVAL_SPLIT_DAYS, CHRONODOSES
+from scraper.pattern.center_info import INTERVAL_SPLIT_DAYS, CHRONODOSES
+from scraper.pattern.vaccine import get_vaccine_name
 from scraper.pattern.scraper_request import ScraperRequest
 from scraper.pattern.scraper_result import DRUG_STORE
 from utils.vmd_config import get_conf_platform
@@ -63,8 +64,15 @@ def get_reasons(entityId, client: httpx.Client = DEFAULT_CLIENT, request: Scrape
     return r.json()
 
 
-def get_slots(entityId, medicalStaffId, reasonId, start_date, end_date,
-              client: httpx.Client = DEFAULT_CLIENT, request: ScraperRequest = None):
+def get_slots(
+    entityId,
+    medicalStaffId,
+    reasonId,
+    start_date,
+    end_date,
+    client: httpx.Client = DEFAULT_CLIENT,
+    request: ScraperRequest = None,
+):
     base_url = ORDOCLIC_API.get("slots")
     payload = {
         "entityId": entityId,
@@ -172,7 +180,6 @@ def fetch_slots(request: ScraperRequest, client: httpx.Client = DEFAULT_CLIENT):
     profile = get_profile(request, client)
     if not profile:
         return None
-    slug = profile["profileSlug"]
     entityId = profile["entityId"]
     attributes = profile.get("attributeValues")
     for settings in attributes:
@@ -193,8 +200,6 @@ def fetch_slots(request: ScraperRequest, client: httpx.Client = DEFAULT_CLIENT):
         )
     for professional in profile["publicProfessionals"]:
         medicalStaffId = professional["id"]
-        name = professional["fullName"]
-        zip = professional["zip"]
         reasons = get_reasons(entityId, request=request)
         for reason in reasons["reasons"]:
             if not is_reason_valid(reason):

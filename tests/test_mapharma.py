@@ -1,9 +1,8 @@
 import json
 import httpx
 
-from bs4 import BeautifulSoup
 from pathlib import Path
-from datetime import datetime, date
+from datetime import datetime
 from pytz import timezone
 
 from scraper.mapharma.mapharma import parse_slots, fetch_slots, count_appointements, campagne_to_centre
@@ -47,6 +46,11 @@ def test_fetch_slots():
     request = ScraperRequest("https://mapharma.net/97200?c=60&l=1", "2021-04-14")
     first_availability = fetch_slots(request, client, opendata_file=TEST_OPEN_DATA_FILE)
     assert first_availability == "2021-04-19T17:15:00"
+
+    # test campagne["total_libres"]: 0
+    request = ScraperRequest("https://mapharma.net/88400?c=92&l=1", "2021-04-14")
+    first_availability = fetch_slots(request, client, opendata_file=TEST_OPEN_DATA_FILE)
+    assert first_availability == None
 
 
 def test_campaign_to_center():

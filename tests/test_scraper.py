@@ -2,10 +2,11 @@ import datetime as dt
 import json
 
 from scraper.export.export_merge import export_data
-from scraper.pattern.center_info import CenterInfo, Vaccine, dict_to_center_info, get_vaccine_name
+from scraper.pattern.center_info import CenterInfo
 from scraper.pattern.scraper_result import GENERAL_PRACTITIONER, ScraperResult
+from scraper.pattern.vaccine import Vaccine, get_vaccine_name
 from utils.vmd_utils import departementUtils
-from scraper.scraper import fetch_centre_slots, get_start_date, gouv_centre_iterator, ialternate
+from scraper.scraper import fetch_centre_slots, get_start_date, gouv_centre_iterator
 from scraper.pattern.scraper_request import ScraperRequest
 from scraper.error import BlockedByDoctolibError
 from .utils import mock_datetime_now
@@ -93,7 +94,7 @@ def test_export_data(tmp_path):
             "internal_id": None,
         },
     ]
-    centres_cherchés = [dict_to_center_info(center) for center in centres_cherchés_dict]
+    centres_cherchés = [CenterInfo.from_dict(center) for center in centres_cherchés_dict]
 
     for center in centres_cherchés:
         if center.nom != "Médiathèque Jacques GAUTIER":
@@ -143,7 +144,7 @@ def test_export_data(tmp_path):
                 "vaccine_type": None,
                 "erreur": None,
                 "last_scan_with_availabilities": None,
-                "request_counts": None
+                "request_counts": None,
             },
         ],
         "centres_indisponibles": [],
@@ -170,7 +171,7 @@ def test_export_data(tmp_path):
                 "vaccine_type": None,
                 "erreur": None,
                 "last_scan_with_availabilities": None,
-                "request_counts": None
+                "request_counts": None,
             },
         ],
         "centres_indisponibles": [
@@ -189,7 +190,7 @@ def test_export_data(tmp_path):
                 "vaccine_type": None,
                 "erreur": None,
                 "last_scan_with_availabilities": None,
-                "request_counts": None
+                "request_counts": None,
             }
         ],
         "last_scrap": [],
@@ -216,7 +217,7 @@ def test_export_data(tmp_path):
                 "vaccine_type": None,
                 "erreur": None,
                 "last_scan_with_availabilities": None,
-                "request_counts": None
+                "request_counts": None,
             },
         ],
         "last_scrap": [],
@@ -243,7 +244,7 @@ def test_export_data(tmp_path):
                 "vaccine_type": None,
                 "erreur": None,
                 "last_scan_with_availabilities": None,
-                "request_counts": None
+                "request_counts": None,
             },
         ],
         "centres_indisponibles": [],
@@ -298,7 +299,7 @@ def test_export_reserved_centers(tmp_path):
             "internal_id": None,
         }
     ]
-    centres_cherchés = [dict_to_center_info(center) for center in centres_cherchés_dict]
+    centres_cherchés = [CenterInfo.from_dict(center) for center in centres_cherchés_dict]
 
     out_dir = tmp_path / "out"
     out_dir.mkdir()
@@ -382,7 +383,7 @@ def test_export_data_when_blocked(tmp_path):
                 "appointment_by_phone_only": False,
                 "erreur": "ERREUR DE SCRAPPING (Doctolib): Doctolib bloque nos appels: 403 https://example.com/hopital-magique",
                 "last_scan_with_availabilities": None,
-                "request_counts": None
+                "request_counts": None,
             }
         ],
         "doctolib_bloqué": True,
@@ -408,7 +409,7 @@ def test_export_data_when_blocked(tmp_path):
                 "vaccine_type": None,
                 "erreur": None,
                 "last_scan_with_availabilities": None,
-                "request_counts": None
+                "request_counts": None,
             },
         ],
         "centres_indisponibles": [],

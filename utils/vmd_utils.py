@@ -2,7 +2,7 @@ import re
 import csv
 import json
 import logging
-from typing import List
+from typing import List, Optional
 from urllib.parse import urlparse, urlencode, urlunparse, parse_qs, unquote
 import datetime as dt
 import pytz
@@ -107,29 +107,39 @@ class departementUtils:
             raise ValueError(f"Code INSEE absent de la base des codes INSEE : {insee_code}")
 
     @staticmethod
-    def get_city(address: str) -> str:
+    def get_city(address: str) -> Optional[str]:
         """
         Récupère la ville depuis l'adresse complète
         >>> get_city("2 avenue de la République, 75005 PARIS")
         'PARIS'
         """
-        print ("re.search", address)
-        if (address == None):
-            print ("address is none") 
-        try:
-            if search := re.search(r"(?<=\s\d{5}\s)(?P<com_nom>.*?)\s*$", address):
-                return search.groupdict().get("com_nom")
-        except:
-            print ("Failed in get_city with address:", address)
+
+        # print ("re.search", address)
+        # if (address == None):
+        #     print ("address is none") 
+        # try:
+        #     if search := re.search(r"(?<=\s\d{5}\s)(?P<com_nom>.*?)\s*$", address):
+        #         return search.groupdict().get("com_nom")
+        # except:
+        #     print ("Failed in get_city with address:", address)
+
+        if not address:
+            return None
+        # tmp debug
+        if search := re.search(r"(?<=\s\d{5}\s)(?P<com_nom>.*?)\s*$", address):
+            return search.groupdict().get("com_nom")
+
         return None
 
     @staticmethod
-    def get_cp(address: str) -> str:
+    def get_cp(address: str) -> Optional[str]:
         """
         Récupère le code postal depuis l'adresse complète
         >>> get_cp(("2 avenue de la République, 75005 PARIS")
         '75005'
         """
+        if not address:
+            return None
         if search := re.search(r"\b\d{5}\b", address):
             return search.group(0)
         return None
@@ -171,7 +181,9 @@ def format_phone_number(_phone_number: str) -> str:
     phone_number = phone_number.replace(".", "")
 
     if not phone_number[0] == "+":
-        if phone_number[0] == "0":
+        if phone_number[:2] == "00":
+            phone_number = "+" + phone_number[2:]
+        elif phone_number[0] == "0":
             phone_number = "+33" + phone_number[1:]
         else:
             phone_number = "+33" + phone_number
