@@ -163,6 +163,8 @@ def convert_csv_data_to_center_info(data: dict) -> CenterInfo:
     center = CenterInfo(departement, name, url)
     if data.get("iterator", "") == "ordoclic":
         return convert_ordoclic_to_center_info(data, center)
+    print("data is ",data)
+    print("convert_csv_data_to_location is ",convert_csv_data_to_location(data))
     center.fill_localization(convert_csv_data_to_location(data))
     center.metadata = dict()
     center.metadata["address"] = convert_csv_address(data)

@@ -24,9 +24,13 @@ def convert_csv_data_to_location(csv_data: dict) -> Optional[CenterLocation]:
         return None
     if "address" in csv_data:
         if not city:
+            print("csv_data", csv_data)
+            print("getting city from '",csv_data.get("address"),"'")
             city = departementUtils.get_city(csv_data.get("address"))
+            print("got city '",city,"'")
         if not cp:
             cp = departementUtils.get_cp(csv_data.get("address"))
+            print("got cp '",cp,"'")
     try:
         return CenterLocation(float(long), float(lat), city, cp)
     except:

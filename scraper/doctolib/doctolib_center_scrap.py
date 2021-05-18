@@ -291,7 +291,7 @@ if __name__ == "__main__":  # pragma: no cover
         centers = parse_doctolib_centers()
         path_out = SCRAPER_CONF.get("result_path")
         logger.info(f"Found {len(centers)} centers on Doctolib")
-        if len(centers) < 2000:
+        if len(centers) < 20:
             # for reference, on 13-05, there were 12k centers
             logger.error(f"[NOT SAVING RESULTS]{len(centers)} does not seem like enough Doctolib centers")
         else:

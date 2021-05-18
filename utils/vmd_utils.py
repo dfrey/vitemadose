@@ -113,8 +113,14 @@ class departementUtils:
         >>> get_city("2 avenue de la République, 75005 PARIS")
         'PARIS'
         """
-        if search := re.search(r"(?<=\s\d{5}\s)(?P<com_nom>.*?)\s*$", address):
-            return search.groupdict().get("com_nom")
+        print ("re.search", address)
+        if (address == None):
+            print ("address is none") 
+        try:
+            if search := re.search(r"(?<=\s\d{5}\s)(?P<com_nom>.*?)\s*$", address):
+                return search.groupdict().get("com_nom")
+        except:
+            print ("Failed in get_city with address:", address)
         return None
 
     @staticmethod
@@ -200,7 +206,7 @@ def get_last_scans(centres):
     url = get_conf_inputs().get("last_scans")
     last_scans = {}
     liste_centres = []
-
+    print ("in get_last_scans, centres: ", centres)
     for centre in centres:
         liste_centres.append(centre)
 

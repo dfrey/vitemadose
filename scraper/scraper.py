@@ -60,9 +60,10 @@ def scrape(platforms=None) -> None:  # pragma: no cover
     with profiler, Pool(POOL_SIZE, **profiler.pool_args()) as pool:
         centre_iterator_proportion = (c for c in centre_iterator(platforms=platforms) if random() < PARTIAL_SCRAPE)
         centres_cherchés = pool.imap_unordered(cherche_prochain_rdv_dans_centre, centre_iterator_proportion, 1)
-
-        centres_cherchés = get_last_scans(centres_cherchés)
-
+        try:
+            centres_cherchés = get_last_scans(centres_cherchés)
+        except:
+            print("exception in get_last_scans with centres_cherchés",centres_cherchés) 
         log_platform_requests(centres_cherchés)
 
         if platforms:
